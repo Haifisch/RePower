@@ -1,5 +1,7 @@
-#import <CepheiPrefs/HBRootListController.h>
+//#import <CepheiPrefs/HBRootListController.h>
+#import <Preferences/Preferences.h>
+#import <UIKit/UIKit.h>
 
-@interface HBRePowerListController : HBRootListController
+@interface HBRePowerListController : PSViewController <UITableViewDelegate, UITableViewDataSource>
 
 @end

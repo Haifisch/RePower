@@ -6,15 +6,15 @@ THEOS = /opt/theos
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = RePower
-RePower_FILES = RePower.xm 
+RePower_FILES = $(wildcard *.xm) $(wildcard *.m)
 RePower_FRAMEWORKS = Foundation UIKit QuartzCore
 RePower_PRIVATE_FRAMEWORKS = TelephonyUI CoreGraphics
 RePower_CFLAGS = -fobjc-arc
-RePower_LIBRARIES = cephei
+#RePower_LIBRARIES = cephei
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += RePowerPrefs
-SUBPROJECTS += prefs
+#SUBPROJECTS += prefs
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 after-install::

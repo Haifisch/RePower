@@ -8,7 +8,6 @@ RePower_FILES = $(wildcard *.xm) $(wildcard *.m)
 RePower_INSTALL_PATH = /Library/PreferenceBundles
 RePower_FRAMEWORKS = UIKit CoreGraphics
 RePower_PRIVATE_FRAMEWORKS = Preferences
-RePower_LIBRARIES = cepheiprefs
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
