@@ -9,7 +9,7 @@
 @property (nonatomic, retain) _UIActionSlider *respringSlider;
 @property (nonatomic, retain) _UIActionSlider *powerSlider;
 @property (nonatomic, retain) _UIActionSlider *safemodeSlider;
-//@property (nonatomic, retain) _UIActionSlider *actionSlider;
+@property (nonatomic, retain) NSUserDefaults *preferences;
 
 -(void)setupSimpleView:(CGRect)frame;
 - (int)uptime;

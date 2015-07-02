@@ -156,7 +156,7 @@
 			[_previewView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 
 			//this fucking view wont clip so make a masking view
-			UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake((kScreenWidth / 2) + ((kScreenWidth * .7) / 2), 0, kScreenWidth, [[UIScreen mainScreen] bounds].size.height)];
+			UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake((kScreenWidth / 2) + ((kScreenWidth * .7) / 2), 10, kScreenWidth, [[UIScreen mainScreen] bounds].size.height)];
 			[maskView setBackgroundColor:[UIColor whiteColor]];
 
 			[cell setClipsToBounds:YES];
@@ -210,7 +210,7 @@
 	[_previewView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 	
 	//this fucking view wont clip so make a masking view
-	UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake((kScreenWidth / 2) + ((kScreenWidth * .7) / 2), 0, kScreenWidth, [[UIScreen mainScreen] bounds].size.height)];
+	UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake((kScreenWidth / 2) + ((kScreenWidth * .7) / 2), 10, kScreenWidth, [[UIScreen mainScreen] bounds].size.height)];
 	[maskView setBackgroundColor:[UIColor whiteColor]];
 
 	//add back to superview

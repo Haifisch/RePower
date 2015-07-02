@@ -23,7 +23,6 @@ HBRePowerSlidersView *sliderView;
 
 UIButton* cancelButton;
 UILabel* cancelLabel;
-//HBPreferences *preferences;
 
 int cancelCommonX = 80;
 int cancelCommonYAddition = 120;
@@ -31,18 +30,20 @@ BOOL enableSafeMode;
 BOOL isEnabled;
 
 -(void)animateIn{
-	// Add views
-	isEnabled = [preferences boolForKey:@"enabled"];
-	enableSafeMode = [preferences boolForKey:@"safemode"];
 
+	// Add views
 	sliderView = [[HBRePowerSlidersView alloc] init];
 	[sliderView setFrame:self.frame];
-	[self addSubview:sliderView];
 
-	if (YES)
+	if ([[sliderView preferences] boolForKey:@"isEnabled"])
 	{
+		//lol dont double add
+		[sliderView removeFromSuperview];
+		[self addSubview:sliderView];
+
 		[sliderView setupSimpleView:actionSlider.frame];
 		[sliderView setHidden:NO];
+
 	}
 
 	cancelButton = MSHookIvar<UIButton *>(self, "_cancelButton");
@@ -54,14 +55,25 @@ BOOL isEnabled;
 -(void)layoutSubviews {
 
 	actionSlider = [self valueForKey:@"_actionSlider"];
-	[actionSlider removeFromSuperview];
-NSLog(@"frame: %@", NSStringFromCGRect(actionSlider.frame));
 
 	//create view if needed
 	if (!sliderView) {
 
 		sliderView = [[HBRePowerSlidersView alloc] init];
 		[sliderView setFrame:self.frame];
+	}
+
+	if ([[sliderView preferences] boolForKey:@"isEnabled"]) {
+
+		[actionSlider removeFromSuperview];
+
+		//remove and readd to overlay
+		[cancelButton removeFromSuperview];
+		[cancelLabel removeFromSuperview];
+
+		[sliderView addSubview:cancelButton];
+		[sliderView addSubview:cancelLabel];
+
 		[self addSubview:sliderView];
 	}
 
@@ -76,12 +88,6 @@ NSLog(@"frame: %@", NSStringFromCGRect(actionSlider.frame));
 		[self bringSubviewToFront:cancelButton];
 	}
 
-	//remove and readd to overlay
-	[cancelButton removeFromSuperview];
-	[cancelLabel removeFromSuperview];
-
-	[sliderView addSubview:cancelButton];
-	[sliderView addSubview:cancelLabel];
 
 	%orig;
 }
@@ -94,30 +100,16 @@ NSLog(@"frame: %@", NSStringFromCGRect(actionSlider.frame));
 }
 
 -(void)actionSliderDidCompleteSlide:(id)arg1 {
-	_UIActionSlider *actionSlider = arg1;
 	
 	[sliderView setHidden:YES];
 
-	if (actionSlider.tag == 12){
-		[(SpringBoard *)[UIApplication sharedApplication] reboot];
-	}else if (actionSlider.tag == 69){
-		[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
-	}else if (actionSlider.tag == 420){
-		//HBLogInfo(@"%@", @[][1]); // LOL thanks ethan
-	}else {
-		%orig;
-	}
+	%orig;
 }
 
 %end //%hook
 
 
 %ctor {
-	//HBLogInfo(@"[RePower] initialized.");
-	/*preferences = [[HBPreferences alloc] initWithIdentifier:@"ws.hbang.repower"];
-	[preferences registerDefaults:@{
- 		@"enabled": @YES,
- 		@"safemode": @NO
- 	}]; */
+
 	%init;
 }

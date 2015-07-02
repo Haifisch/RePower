@@ -2,6 +2,21 @@
 
 @implementation HBRePowerSlidersView
 
+- (id)init {
+
+	if (self = [super init]) {
+
+		//create prefs
+		_preferences = [[NSUserDefaults alloc] initWithSuiteName:@"com.hbnang.repower"];
+		NSDictionary *defaults = @{ @"isEnabled" : @YES,
+									@"showSafemode" : @YES,
+									@"showUptime" : @YES 
+								  };
+		[_preferences registerDefaults:defaults];
+	}
+
+	return self;
+}
 
 -(void)setupSimpleView:(CGRect)frame {
 
@@ -36,7 +51,7 @@
 
 	// Create new safemode slider
 	//HBLogInfo(@"Safemode enabled? %@", enableSafeMode ? @"Yes" : @"No");
-	if (YES)
+	if ([_preferences boolForKey:@"showSafemode"])
 	{
 		_safemodeSlider = [[objc_getClass("_UIActionSlider") alloc] initWithFrame:CGRectMake(frame.origin.x, (frame.origin.y+360), frame.size.width, frame.size.height) vibrantSettings:nil]; //CGRectMake(frame.origin.x, (frame.origin.y+180), 375, 75)
 		_safemodeSlider.knobImage = [UIImage imageNamed:@"/Library/PreferenceBundles/RePower.bundle/Theme/SafeMode.png"];
@@ -47,7 +62,7 @@
 	}
 
 	//uptime bar
-	if (YES) {
+	if ([_preferences boolForKey:@"showUptime"]) {
 
 		// fuck this bar, man. 
 		CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -89,6 +104,26 @@
         uptime = now - boottime.tv_sec;
     }
     return (int)uptime;
+}
+
+-(void)actionSliderDidCompleteSlide:(id)arg1 {
+	_UIActionSlider *actionSlider = arg1;
+	
+	[self setHidden:YES];
+
+	if (actionSlider.tag == 12){
+		[(SpringBoard *)[UIApplication sharedApplication] reboot];
+	}else if (actionSlider.tag == 69){
+		[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
+	}else if (actionSlider.tag == 420){
+		NSLog(@"%@", @[][1]); // LOL thanks ethan
+	}
+	else {
+
+		//power off
+		[(SpringBoard *)[UIApplication sharedApplication] _powerDownNow];
+	}
+
 }
 
 @end

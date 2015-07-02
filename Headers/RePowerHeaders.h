@@ -22,6 +22,8 @@
 - (void)_rebootNow;
 - (void)_relaunchSpringBoardNow;
 - (void)relaunchSpringBoard;
+-(void)_powerDownNow;
+
 @end
 
 @protocol _UIActionSliderDelegate;
