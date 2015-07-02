@@ -10,6 +10,12 @@
 	_powerSlider.knobImage = [UIImage imageNamed:@"/Library/PreferenceBundles/RePower.bundle/Theme/Power.png"];
 	_powerSlider.trackText = @"slide to power off";
 	[_powerSlider setDelegate:self];
+
+	/*//delay sliding (this dont work)
+	[_powerSlider setAnimating:NO];
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, .1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		[_powerSlider setAnimating:YES];
+	}); */
 	[self addSubview:_powerSlider];
 
 	// Create new reboot slider

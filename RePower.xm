@@ -55,6 +55,7 @@ BOOL isEnabled;
 
 	actionSlider = [self valueForKey:@"_actionSlider"];
 	[actionSlider removeFromSuperview];
+NSLog(@"frame: %@", NSStringFromCGRect(actionSlider.frame));
 
 	//create view if needed
 	if (!sliderView) {

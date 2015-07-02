@@ -4,7 +4,7 @@ ARCHS = armv7 armv7s arm64
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = RePower
-RePower_FILES = $(wildcard *.xm) $(wildcard *.m)
+RePower_FILES = $(wildcard *.xm) $(wildcard *.m) ../HBRePowerSlidersView.m
 RePower_INSTALL_PATH = /Library/PreferenceBundles
 RePower_FRAMEWORKS = UIKit CoreGraphics
 RePower_PRIVATE_FRAMEWORKS = Preferences

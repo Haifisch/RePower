@@ -138,6 +138,7 @@
 -(CGSize)knobImageOffset;
 -(void)setTrackTextBaselineFromBottom:(double)arg1 ;
 -(double)knobPosition;
+- (void)setAnimating:(BOOL)arg1;
 @end
 @protocol _UIActionSliderDelegate <NSObject>
 @optional

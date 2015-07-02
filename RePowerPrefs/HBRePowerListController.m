@@ -52,12 +52,23 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
 	return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+	//create large cell for preview
+	if ([indexPath section] == 3) {
+
+		return [[UIScreen mainScreen] bounds].size.height * .7;
+	}
+
+	return 44;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -118,6 +129,29 @@
 			[uptimeSwitch setOnTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 			[uptimeSwitch setTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 			[cell setAccessoryView:uptimeSwitch];
+		}
+	}
+
+	//preview cell
+	else if ([indexPath section] == 3) {
+
+		if ([indexPath row] == 0) {
+
+			HBRePowerSlidersView *slidersView = [[HBRePowerSlidersView alloc] init];
+			[slidersView setTransform:CGAffineTransformMakeScale(.8, .8)];
+			[slidersView setFrame:CGRectMake((kScreenWidth / 2) - ((kScreenWidth * .8) / 2), 10, kScreenWidth, [[UIScreen mainScreen] bounds].size.height - 20)];
+			[slidersView setupSimpleView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
+			[slidersView setUserInteractionEnabled:NO];
+			[slidersView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
+
+			//this fucking view wont clip so make a masking view
+			UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake((kScreenWidth / 2) + ((kScreenWidth * .7) / 2), 0, kScreenWidth, [[UIScreen mainScreen] bounds].size.height)];
+			[maskView setBackgroundColor:[UIColor whiteColor]];
+
+			[cell setClipsToBounds:YES];
+			[cell addSubview:slidersView];
+			[cell addSubview:maskView];
+
 		}
 	}
 
