@@ -12,10 +12,18 @@
 
 	if (self = [super init]) {
 
+		//create preferences
+		_preferences = [[NSUserDefaults alloc] initWithSuiteName:@"com.hbnang.repower"];
+		NSDictionary *defaults = @{ @"isEnabled" : @YES,
+									@"showSafemode" : @YES,
+									@"showUptime" : @YES 
+								  };
+		[_preferences registerDefaults:defaults];
+
 		//create tableview
-		UITableView *table = [[UITableView alloc] initWithFrame:[[UIScreen mainScreen] bounds] style:UITableViewStyleGrouped];
-		[table setDelegate:self];
-		[table setDataSource:self];
+		_settingsTable = [[UITableView alloc] initWithFrame:[[UIScreen mainScreen] bounds] style:UITableViewStyleGrouped];
+		[_settingsTable setDelegate:self];
+		[_settingsTable setDataSource:self];
 
 		//create header
 		UIView *headerBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 100)];
@@ -42,9 +50,9 @@
 		[paddingView setBackgroundColor:[UIColor clearColor]];
 		[paddingView addSubview:headerBackground];
 
-		[table setTableHeaderView:paddingView];
+		[_settingsTable setTableHeaderView:paddingView];
 
-		[[self view] addSubview:table];
+		[[self view] addSubview:_settingsTable];
 	}
 
 	return self;
@@ -97,9 +105,10 @@
 
 			[[cell textLabel] setText:@"Enabled"];
 			UISwitch *enabledSwitch = [[UISwitch alloc] init];
-			[enabledSwitch setOn:1];
+			[enabledSwitch setOn:[_preferences boolForKey:@"isEnabled"]];
 			[enabledSwitch setOnTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 			[enabledSwitch setTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
+			[enabledSwitch addTarget:self action:@selector(handleEnabledSwitch:) forControlEvents:UIControlEventValueChanged];
 			[cell setAccessoryView:enabledSwitch];
 		}
 	}
@@ -111,9 +120,10 @@
 
 			[[cell textLabel] setText:@"Show Safemode Slider"];
 			UISwitch *safemodeSwitch = [[UISwitch alloc] init];
-			[safemodeSwitch setOn:1];
+			[safemodeSwitch setOn:[_preferences boolForKey:@"showSafemode"]];
 			[safemodeSwitch setOnTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 			[safemodeSwitch setTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
+			[safemodeSwitch addTarget:self action:@selector(handleSafemodeSwitch:) forControlEvents:UIControlEventValueChanged];
 			[cell setAccessoryView:safemodeSwitch];
 		}
 	}
@@ -125,9 +135,10 @@
 
 			[[cell textLabel] setText:@"Show Uptime"];
 			UISwitch *uptimeSwitch = [[UISwitch alloc] init];
-			[uptimeSwitch setOn:1];
+			[uptimeSwitch setOn:[_preferences boolForKey:@"showUptime"]];
 			[uptimeSwitch setOnTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 			[uptimeSwitch setTintColor:[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
+			[uptimeSwitch addTarget:self action:@selector(handleUptimeSwitch:) forControlEvents:UIControlEventValueChanged];
 			[cell setAccessoryView:uptimeSwitch];
 		}
 	}
@@ -137,25 +148,75 @@
 
 		if ([indexPath row] == 0) {
 
-			HBRePowerSlidersView *slidersView = [[HBRePowerSlidersView alloc] init];
-			[slidersView setTransform:CGAffineTransformMakeScale(.8, .8)];
-			[slidersView setFrame:CGRectMake((kScreenWidth / 2) - ((kScreenWidth * .8) / 2), 10, kScreenWidth, [[UIScreen mainScreen] bounds].size.height - 20)];
-			[slidersView setupSimpleView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
-			[slidersView setUserInteractionEnabled:NO];
-			[slidersView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
+			_previewView = [[HBRePowerSlidersView alloc] init];
+			[_previewView setTransform:CGAffineTransformMakeScale(.8, .8)];
+			[_previewView setFrame:CGRectMake((kScreenWidth / 2) - ((kScreenWidth * .8) / 2), 10, kScreenWidth, [[UIScreen mainScreen] bounds].size.height - 20)];
+			[_previewView setupSimpleView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
+			[_previewView setUserInteractionEnabled:NO];
+			[_previewView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
 
 			//this fucking view wont clip so make a masking view
 			UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake((kScreenWidth / 2) + ((kScreenWidth * .7) / 2), 0, kScreenWidth, [[UIScreen mainScreen] bounds].size.height)];
 			[maskView setBackgroundColor:[UIColor whiteColor]];
 
 			[cell setClipsToBounds:YES];
-			[cell addSubview:slidersView];
+			[cell addSubview:_previewView];
 			[cell addSubview:maskView];
 
 		}
 	}
 
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+	[tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+- (void)handleEnabledSwitch:(UISwitch *)cellSwitch {
+
+	[_preferences setBool:[cellSwitch isOn] forKey:@"isEnabled"];
+	[_preferences synchronize];
+	[self refreshPreview];
+}
+
+- (void)handleSafemodeSwitch:(UISwitch *)cellSwitch {
+
+	[_preferences setBool:[cellSwitch isOn] forKey:@"showSafemode"];
+	[_preferences synchronize];
+	[self refreshPreview];
+}
+
+- (void)handleUptimeSwitch:(UISwitch *)cellSwitch {
+
+	[_preferences setBool:[cellSwitch isOn] forKey:@"showUptime"];
+	[_preferences synchronize];
+	[self refreshPreview];
+}
+
+- (void)refreshPreview {
+
+	//store superview so we can readd it
+	UIView *superview = [_previewView superview];
+	[_previewView removeFromSuperview];
+
+	//create preview
+	_previewView = [[HBRePowerSlidersView alloc] init];
+	[_previewView setTransform:CGAffineTransformMakeScale(.8, .8)];
+	[_previewView setFrame:CGRectMake((kScreenWidth / 2) - ((kScreenWidth * .8) / 2), 10, kScreenWidth, [[UIScreen mainScreen] bounds].size.height - 20)];
+	[_previewView setupSimpleView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
+	[_previewView setUserInteractionEnabled:NO];
+	[_previewView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
+	
+	//this fucking view wont clip so make a masking view
+	UIView *maskView = [[UIView alloc] initWithFrame:CGRectMake((kScreenWidth / 2) + ((kScreenWidth * .7) / 2), 0, kScreenWidth, [[UIScreen mainScreen] bounds].size.height)];
+	[maskView setBackgroundColor:[UIColor whiteColor]];
+
+	//add back to superview
+	[superview addSubview:_previewView];
+	[superview addSubview:maskView];
+
 }
 
 @end
