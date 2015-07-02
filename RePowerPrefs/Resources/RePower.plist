@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>headerCellClass</key>
+			<string>HBPackageNameHeaderCell</string>
+			<key>showVersion</key>
+			<false/>
+			<key>icon</key>
+			<string>RePower.png</string>
+			<key>packageIdentifier</key>
+			<string>ws.hbang.repower</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Settings</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>ws.hbang.repower</string>
+			<key>key</key>
+			<string>enabled</string>
+			<key>label</key>
+			<string>Enable RePower</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>ws.hbang.repower</string>
+			<key>key</key>
+			<string>safemode</string>
+			<key>label</key>
+			<string>Enable safemode slider</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Follow the creators on Twitter</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>label</key>
+			<string>Haifisch</string>
+			<key>user</key>
+			<string>0x8badfl00d</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>label</key>
+			<string>hoenir</string>
+			<key>user</key>
+			<string>iamHoenir</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>label</key>
+			<string>meteochu</string>
+			<key>user</key>
+			<string>meteochu</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Copyright (c) 2014-2015 HASHBANG Productions</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>RePower</string>
+</dict>
+</plist>

@@ -1,0 +1,9 @@
+Package: ws.hbang.repower
+Name: RePower
+Depends: mobilesubstrate
+Version: 2.0-1
+Architecture: iphoneos-arm
+Description: A more powerful power down screen.
+Maintainer: HASHBANG Productions <haifisch@hbang.ws>
+Author: haifisch <haifisch@hbang.ws>
+Section: Tweaks
