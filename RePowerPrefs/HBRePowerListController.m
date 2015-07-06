@@ -13,7 +13,7 @@
 	if (self = [super init]) {
 		self.title = @"RePower";
 		//create preferences
-		_preferences = [[NSUserDefaults alloc] initWithSuiteName:@"com.hbang.repower"];
+		_preferences = [[NSUserDefaults alloc] initWithSuiteName:@"ws.hbang.repower"];
 		NSDictionary *defaults = @{ @"isEnabled" : @YES,
 									@"showSafemode" : @YES,
 									@"showUptime" : @YES 
