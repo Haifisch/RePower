@@ -17,8 +17,73 @@
 
 	return self;
 }
-
 -(void)setupSimpleView:(CGRect)frame {
+	int gx = 30;
+	int labelFontSize = 13;
+	// Power button and label
+	UIButton *powerButton = [[UIButton alloc] init];
+	powerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	powerButton.frame = CGRectMake(gx+5, frame.origin.y, 65, 65);
+	[powerButton setBackgroundImage:[UIImage imageNamed:@"/Library/PreferenceBundles/RePower.bundle/Theme/Power.png"] forState:UIControlStateNormal];
+	[powerButton addTarget:self action:@selector(powerdown:) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:powerButton];
+
+	UILabel *powerLabel = [[UILabel alloc] initWithFrame:CGRectMake(gx+5,frame.origin.y+70, 65, 20)];
+	powerLabel.text = @"Halt";
+	powerLabel.font = [UIFont systemFontOfSize:labelFontSize];
+	powerLabel.textAlignment = NSTextAlignmentCenter;
+	powerLabel.textColor = [UIColor whiteColor];
+	[self addSubview:powerLabel];
+
+	// Reboot button and label
+	UIButton *rebootButton = [[UIButton alloc] init];
+	rebootButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	rebootButton.frame = CGRectMake(gx+85, frame.origin.y, 65, 65);
+	[rebootButton setBackgroundImage:[UIImage imageNamed:@"/Library/PreferenceBundles/RePower.bundle/Theme/Reboot.png"] forState:UIControlStateNormal];
+	[rebootButton addTarget:self action:@selector(reboot:) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:rebootButton];
+
+	UILabel *rebootLabel = [[UILabel alloc] initWithFrame:CGRectMake(gx+85,frame.origin.y+70, 65, 20)];
+	rebootLabel.text = @"Reboot";
+	rebootLabel.font = [UIFont systemFontOfSize:labelFontSize];
+	rebootLabel.textAlignment = NSTextAlignmentCenter;
+	rebootLabel.textColor = [UIColor whiteColor];
+	[self addSubview:rebootLabel];
+
+	// Respring button and label
+	UIButton *respringButton = [[UIButton alloc] init];
+	respringButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	respringButton.frame = CGRectMake(gx+165, frame.origin.y, 65, 65);
+	[respringButton setBackgroundImage:[UIImage imageNamed:@"/Library/PreferenceBundles/RePower.bundle/Theme/Respring.png"] forState:UIControlStateNormal];
+	[respringButton addTarget:self action:@selector(respring:) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:respringButton];
+
+	UILabel *respringLabel = [[UILabel alloc] initWithFrame:CGRectMake(gx+165,frame.origin.y+70, 65, 20)];
+	respringLabel.text = @"Respring";
+	respringLabel.font = [UIFont systemFontOfSize:labelFontSize];
+	respringLabel.textAlignment = NSTextAlignmentCenter;
+	respringLabel.textColor = [UIColor whiteColor];
+	[self addSubview:respringLabel];
+
+	// Safemode button and label
+	UIButton *safemodeButton = [[UIButton alloc] init];
+	safemodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	safemodeButton.frame = CGRectMake(gx+245, frame.origin.y, 65, 65);
+	[safemodeButton setBackgroundImage:[UIImage imageNamed:@"/Library/PreferenceBundles/RePower.bundle/Theme/SafeMode.png"] forState:UIControlStateNormal];
+	[respringButton addTarget:self action:@selector(enterSafemode:) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:safemodeButton];
+
+	UILabel *safemodeLabel = [[UILabel alloc] initWithFrame:CGRectMake(gx+245,frame.origin.y+70, 65, 20)];
+	safemodeLabel.text = @"Safemode";
+	safemodeLabel.font = [UIFont systemFontOfSize:labelFontSize];
+	safemodeLabel.textAlignment = NSTextAlignmentCenter;
+	safemodeLabel.textColor = [UIColor whiteColor];
+	[self addSubview:safemodeLabel];
+
+	[self setupUptimeBar];
+}
+
+-(void)setupComplexView:(CGRect)frame {
 
 	// Recreate exsisting power slider
 	_powerSlider = [[objc_getClass("_UIActionSlider") alloc] initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height) vibrantSettings:nil];
@@ -60,7 +125,10 @@
 		[_safemodeSlider setTag:420];
 		[self addSubview:_safemodeSlider];	
 	}
+	[self setupUptimeBar];
+}	
 
+- (void)setupUptimeBar {
 	//uptime bar
 	if ([_preferences boolForKey:@"showUptime"]) {
 
@@ -86,8 +154,7 @@
 		[uptimeBar addSubview:uptimeLabel];
 
 	}
-
-}	
+}
 
 - (int)uptime {
       
@@ -105,23 +172,79 @@
     }
     return (int)uptime;
 }
+- (IBAction)reboot:(id)sender {
+	if ([_preferences boolForKey:@"safetyPrompt"]) {
+		UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"Are you sure you'd like to reboot now?" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
+			[(SpringBoard *)[UIApplication sharedApplication] reboot];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil]];
+        [[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
+	} else {
+		[(SpringBoard *)[UIApplication sharedApplication] reboot];
+	}
+}
+
+- (IBAction)respring:(id)sender {
+	if ([_preferences boolForKey:@"safetyPrompt"]) {
+
+		UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"Are you sure you'd like to respring now?" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
+			[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil]];
+
+        [[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
+	} else {
+		[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
+	}
+}
+
+- (IBAction)enterSafemode:(id)sender {
+	if ([_preferences boolForKey:@"safetyPrompt"]) {
+		UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"Are you sure you'd like to enter Safemode now?" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
+			NSString *fileName = [NSString stringWithFormat:@"/var/mobile/Library/Preferences/com.saurik.mobilesubstrate.dat"];
+	        NSString *content = @"";
+	        [content writeToFile:fileName atomically:NO encoding:NSStringEncodingConversionAllowLossy error:nil];
+			[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil]];
+        [[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
+	} else {
+		NSString *fileName = [NSString stringWithFormat:@"/var/mobile/Library/Preferences/com.saurik.mobilesubstrate.dat"];
+        NSString *content = @"";
+        [content writeToFile:fileName atomically:NO encoding:NSStringEncodingConversionAllowLossy error:nil];
+		[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
+	}
+}
+
+- (IBAction)powerdown:(id)sender {
+	if ([_preferences boolForKey:@"safetyPrompt"]) {
+
+		UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"Are you sure you'd like to power down now?" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
+			[(SpringBoard *)[UIApplication sharedApplication] _powerDownNow];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:nil]];
+
+        [[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
+	} else {
+		[(SpringBoard *)[UIApplication sharedApplication] _powerDownNow];
+	}
+}
 
 -(void)actionSliderDidCompleteSlide:(id)arg1 {
 	_UIActionSlider *actionSlider = arg1;
-	
 	[self setHidden:YES];
-
 	if (actionSlider.tag == 12){
-		[(SpringBoard *)[UIApplication sharedApplication] reboot];
-	}else if (actionSlider.tag == 69){
-		[(SpringBoard *)[UIApplication sharedApplication] _relaunchSpringBoardNow];
-	}else if (actionSlider.tag == 420){
-		NSLog(@"%@", @[][1]); // LOL thanks ethan
-	}
-	else {
-
-		//power off
-		[(SpringBoard *)[UIApplication sharedApplication] _powerDownNow];
+		[self reboot:actionSlider];
+	} else if (actionSlider.tag == 69){
+		[self respring:actionSlider];
+	} else if (actionSlider.tag == 420){
+        [self enterSafemode:actionSlider];
+	} else {
+		[self powerdown:actionSlider];
 	}
 
 }

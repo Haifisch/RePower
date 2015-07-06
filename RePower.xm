@@ -34,16 +34,20 @@ BOOL isEnabled;
 	// Add views
 	sliderView = [[HBRePowerSlidersView alloc] init];
 	[sliderView setFrame:self.frame];
-
+	actionSlider = [self valueForKey:@"_actionSlider"];
 	if ([[sliderView preferences] boolForKey:@"isEnabled"])
 	{
 		//lol dont double add
 		[sliderView removeFromSuperview];
 		[self addSubview:sliderView];
-
-		[sliderView setupSimpleView:actionSlider.frame];
-		[sliderView setHidden:NO];
-
+		if ([[sliderView preferences] boolForKey:@"isSimple"])
+		{
+			[sliderView setupSimpleView:actionSlider.frame];
+			[sliderView setHidden:NO];
+		} else {
+			[sliderView setupComplexView:actionSlider.frame];
+			[sliderView setHidden:NO];
+		}
 	}
 
 	cancelButton = MSHookIvar<UIButton *>(self, "_cancelButton");
@@ -77,18 +81,19 @@ BOOL isEnabled;
 		[self addSubview:sliderView];
 	}
 
-	sliderView.powerSlider.frame = CGRectMake(actionSlider.frame.origin.x, actionSlider.frame.origin.y, actionSlider.bounds.size.width, actionSlider.bounds.size.height);
-	sliderView.rebootSlider.frame = CGRectMake(actionSlider.frame.origin.x, (actionSlider.frame.origin.y+120), actionSlider.bounds.size.width, actionSlider.bounds.size.height);
-	sliderView.respringSlider.frame = CGRectMake(actionSlider.frame.origin.x, (actionSlider.frame.origin.y+240), actionSlider.bounds.size.width, actionSlider.bounds.size.height);
-	sliderView.safemodeSlider.frame = CGRectMake(actionSlider.frame.origin.x, (actionSlider.frame.origin.y+360), actionSlider.bounds.size.width, actionSlider.bounds.size.height);
-	if ((([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft) || ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)) && (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad))
-	{
+	if ([[sliderView preferences] boolForKey:@"isSimple"]) {
+		// TODO
+	} else {
+		sliderView.powerSlider.frame = CGRectMake(actionSlider.frame.origin.x, actionSlider.frame.origin.y, actionSlider.bounds.size.width, actionSlider.bounds.size.height);
+		sliderView.rebootSlider.frame = CGRectMake(actionSlider.frame.origin.x, (actionSlider.frame.origin.y+120), actionSlider.bounds.size.width, actionSlider.bounds.size.height);
+		sliderView.respringSlider.frame = CGRectMake(actionSlider.frame.origin.x, (actionSlider.frame.origin.y+240), actionSlider.bounds.size.width, actionSlider.bounds.size.height);
+		sliderView.safemodeSlider.frame = CGRectMake(actionSlider.frame.origin.x, (actionSlider.frame.origin.y+360), actionSlider.bounds.size.width, actionSlider.bounds.size.height);
+	}
+	if ((([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeLeft) || ([[UIDevice currentDevice] orientation] == UIDeviceOrientationLandscapeRight)) && (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)) {
 		cancelButton.frame = CGRectMake(cancelCommonX, actionSlider.frame.origin.y + cancelCommonYAddition, cancelButton.bounds.size.width, cancelButton.bounds.size.height);
 		cancelLabel.frame = CGRectMake(cancelCommonX + 15, (actionSlider.frame.origin.y + cancelCommonYAddition + 80), cancelLabel.bounds.size.width, cancelLabel.bounds.size.height);
 		[self bringSubviewToFront:cancelButton];
 	}
-
-
 	%orig;
 }
 

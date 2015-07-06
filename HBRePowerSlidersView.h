@@ -11,7 +11,9 @@
 @property (nonatomic, retain) _UIActionSlider *safemodeSlider;
 @property (nonatomic, retain) NSUserDefaults *preferences;
 
--(void)setupSimpleView:(CGRect)frame;
+- (void)setupComplexView:(CGRect)frame;
+- (void)setupSimpleView:(CGRect)frame;
 - (int)uptime;
+- (void)setupUptimeBar;
 
 @end
