@@ -12,7 +12,6 @@
 #import "Headers/RePowerHeaders.h"
 #import "HBRePowerSlidersView.h"
 
-static NSString *const kHBRPPreferencesDomain = @"ws.hbang.repower";
 NSUserDefaults *preferences;
 
 %hook SBPowerDownView 
@@ -30,22 +29,23 @@ BOOL enableSafeMode;
 BOOL isEnabled;
 
 -(void)animateIn{
-
 	// Add views
 	sliderView = [[HBRePowerSlidersView alloc] init];
 	[sliderView setFrame:self.frame];
 	actionSlider = [self valueForKey:@"_actionSlider"];
-	if ([[sliderView preferences] boolForKey:@"isEnabled"])
+	HBLogInfo(@"PowerViewPreferences: %@, XM preferences: %@", [preferences boolForKey:@"isSimple"] ? @"Yes":@"No", [[sliderView preferences] boolForKey:@"isSimple"] ? @"Yes":@"No");
+
+	if ([preferences boolForKey:@"isEnabled"])
 	{
 		//lol dont double add
 		[sliderView removeFromSuperview];
 		[self addSubview:sliderView];
-		if ([[sliderView preferences] boolForKey:@"isSimple"])
+		if ([preferences boolForKey:@"isSimple"])
 		{
 			[sliderView setupSimpleView:actionSlider.frame];
 			[sliderView setHidden:NO];
 		} else {
-			[sliderView setupComplexView:actionSlider.frame];
+			[sliderView setupComplexView:actionSlider.frame withDelegate:self];
 			[sliderView setHidden:NO];
 		}
 	}
@@ -67,7 +67,7 @@ BOOL isEnabled;
 		[sliderView setFrame:self.frame];
 	}
 
-	if ([[sliderView preferences] boolForKey:@"isEnabled"]) {
+	if ([preferences boolForKey:@"isEnabled"]) {
 
 		[actionSlider removeFromSuperview];
 
@@ -81,7 +81,7 @@ BOOL isEnabled;
 		[self addSubview:sliderView];
 	}
 
-	if ([[sliderView preferences] boolForKey:@"isSimple"]) {
+	if ([preferences boolForKey:@"isSimple"]) {
 		// TODO
 	} else {
 		sliderView.powerSlider.frame = CGRectMake(actionSlider.frame.origin.x, actionSlider.frame.origin.y, actionSlider.bounds.size.width, actionSlider.bounds.size.height);
@@ -105,16 +105,24 @@ BOOL isEnabled;
 }
 
 -(void)actionSliderDidCompleteSlide:(id)arg1 {
-	
+	[self _resetScreenBrightness];
+	_UIActionSlider *actionSlider = arg1;
 	[sliderView setHidden:YES];
-
-	%orig;
+	if (actionSlider.tag == 12){
+		[sliderView reboot:actionSlider];
+	} else if (actionSlider.tag == 69){
+		[sliderView respring:actionSlider];
+	} else if (actionSlider.tag == 420){
+        [sliderView enterSafemode:actionSlider];
+	} else {
+		[sliderView powerdown:actionSlider];
+	}
 }
 
 %end //%hook
 
 
 %ctor {
-
+	preferences = [[NSUserDefaults alloc] initWithSuiteName:@"ws.hbang.repower"];
 	%init;
 }

@@ -154,6 +154,8 @@
 @interface SBPowerDownView : SBAlertView <_UIActionSliderDelegate>{
     _UIActionSlider* _actionSlider;
 }
+@property(assign, nonatomic) BOOL canAlterScreenBrightness;
+-(void)_resetScreenBrightness;
 -(BOOL)isEnabled;
 -(void)animateOut;
 -(void)animateIn;

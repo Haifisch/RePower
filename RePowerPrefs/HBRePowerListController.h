@@ -5,6 +5,7 @@
 
 @interface HBRePowerListController : PSViewController <UITableViewDelegate, UITableViewDataSource> {
 	UISwitch *safemodeSwitch;
+	UISwitch *safetySwitch;
 }
 
 @property (nonatomic, retain) UITableView *settingsTable;

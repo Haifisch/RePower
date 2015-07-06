@@ -16,7 +16,9 @@
 		_preferences = [[NSUserDefaults alloc] initWithSuiteName:@"ws.hbang.repower"];
 		NSDictionary *defaults = @{ @"isEnabled" : @YES,
 									@"showSafemode" : @YES,
-									@"showUptime" : @YES 
+									@"showUptime" : @YES,
+									@"isSimple" : @NO,
+									@"safetyPrompt" : @NO
 								  };
 		[_preferences registerDefaults:defaults];
 
@@ -180,7 +182,7 @@
 			{
 				[_previewView setupSimpleView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
 			} else {
-				[_previewView setupComplexView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
+				[_previewView setupComplexView:CGRectMake(0, 48, kScreenWidth, 75) withDelegate:self]; //fake default actionslider frame
 			}
 			[_previewView setUserInteractionEnabled:NO];
 			[_previewView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
@@ -278,7 +280,7 @@
 	{
 		[_previewView setupSimpleView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
 	} else {
-		[_previewView setupComplexView:CGRectMake(0, 48, kScreenWidth, 75)]; //fake default actionslider frame
+		[_previewView setupComplexView:CGRectMake(0, 48, kScreenWidth, 75) withDelegate:self]; //fake default actionslider frame
 	}
 	[_previewView setUserInteractionEnabled:NO];
 	[_previewView setBackgroundColor:[UIColor darkGrayColor]];//[UIColor colorWithRed:253.f/255.f green:105.f/255.f blue:95.f/255.f alpha:1]];
